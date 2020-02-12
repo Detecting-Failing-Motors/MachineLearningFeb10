@@ -631,13 +631,14 @@ def getGraphs(UserInput):
         )
     
     """
+    #REMOVED AUTOCORR FUNCTIONALITY 2/11/2020
     
     #Perform FFT, PSD, Correlation, DC Offset
     UserInput1 = RemoveAllDCOffset(UserInput)
     UserInput2 = NormalizeAll(UserInput1)
     x1 = FourierTransform(UserInput2)
     x2 = GetPSDValues(UserInput2)
-    x3 = GetAutocorrValues(UserInput2)
+    #x3 = GetAutocorrValues(UserInput2)
     
     #ACCELEROMETER PLOTTING INFO
     plotinfo = getPlotInfo(UserInput['AccelerometerTimeSeriesData'],UserInput['AccelerometerData'],                          "time (s)","Amplitude [g's]","Accelerometer Raw Data")
@@ -645,7 +646,8 @@ def getGraphs(UserInput):
     plot3info = getPlotInfo(UserInput2['AccelerometerTimeSeriesData'],UserInput2['AccelerometerData'],                          "time (s)","Amplitude [g's/g's]","Accelerometer Normalized Raw Data")
     plot4info = getPlotInfo(x1["AccelerometerFrequency"],x1["Accelerometer Freq. Amp."],                           'Frequency [Hz]',"FFT Amp [g\'s]","Accelerometer FFT")
     plot5info = getPlotInfo(x2["AccelerometerPSDFrequency"],x2["AccelerometerPSD"],'Frequency [Hz]',                           'PSD [g\'s**2 / Hz]',"Accelerometer PSD")
-    plot6info = getPlotInfo(x3["AccelerometerXValues"],x3["AccelerometerAutocorrValues"],'time delay [s]',                           "Autocorrelation amplitude","Accelerometer Autocorrelation")
+    #plot6info = getPlotInfo(x3["AccelerometerXValues"],x3["AccelerometerAutocorrValues"],'time delay [s]',\
+    #                       "Autocorrelation amplitude","Accelerometer Autocorrelation")
     
     #ACOUSTIC PLOTTING INFO
     plot7info = getPlotInfo(UserInput['Channel1Time'],UserInput['Channel1Value'],                          "time (s)","Amplitude","Acoustic Raw Data")
@@ -653,10 +655,11 @@ def getGraphs(UserInput):
     plot9info = getPlotInfo(UserInput2['Channel1Time'],UserInput2['Channel1Value'],                          "time (s)","Amplitude [g's/g's]","Accelerometer Normalized Raw Data")
     plot10info = getPlotInfo(x1["Acoustic Frequency"],x1["Acoustic Freq. Amp."],                           'Frequency [Hz]',"FFT Amp [g\'s]","Accelerometer FFT")
     plot11info = getPlotInfo(x2["AcousticPSDFrequency"],x2["AcousticPSD"],'Frequency [Hz]',                           'PSD [g\'s**2 / Hz]',"Acoustic PSD")
-    plot12info = getPlotInfo(x3["AcousticXValues"],x3["AcousticAutocorrValues"],'time delay [s]',                           "Autocorrelation amplitude","Acoustic Autocorrelation")
+    #plot12info = getPlotInfo(x3["AcousticXValues"],x3["AcousticAutocorrValues"],'time delay [s]',\
+    #                       "Autocorrelation amplitude","Acoustic Autocorrelation")
 
     
-    return plotinfo,plot2info,plot3info,plot4info,plot5info,plot6info,            plot7info,plot8info,plot9info,plot10info,plot11info,plot12info
+    return plotinfo,plot2info,plot3info,plot4info,plot5info,            plot7info,plot8info,plot9info,plot10info,plot11info
 
 
 # In[17]:
@@ -683,4 +686,17 @@ def getPlotInfo(x,y,xlabel,ylabel,title):
     PlotInfo.append(title)
     
     return PlotInfo
+
+
+# In[18]:
+
+
+def truncate(f, n):
+    '''https://stackoverflow.com/questions/783897/truncating-floats-in-python/51172324#51172324'''
+    '''Truncates/pads a float f to n decimal places without rounding'''
+    s = '{}'.format(f)
+    if 'e' in s or 'E' in s:
+        return '{0:.{1}f}'.format(f, n)
+    i, p, d = s.partition('.')
+    return '.'.join([i, (d+'0'*n)[:n]])
 
